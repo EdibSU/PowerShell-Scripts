@@ -71,7 +71,7 @@ Function calls these functions and in this order:
 RestartDM
 #>
 function RestartDM {
-    DisableNetAdapter
+    DisableNetAdapters
     Remove-DMANodes
     Remove-NATSServerNodes
     Invoke-Item "C:\Skyline DataMiner\Tools\DataMiner Restart DataMiner And SLNet.bat"
@@ -93,7 +93,7 @@ Function calls these functions and in this order:
 StartDM
 #>
 function StartDM {
-    DisableNetAdapter
+    DisableNetAdapters
     Remove-DMANodes
     Remove-NATSServerNodes
     Invoke-Item "C:\Skyline DataMiner\Tools\DataMiner Start DataMiner And SLNet.bat"
