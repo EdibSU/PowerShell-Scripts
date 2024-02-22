@@ -63,8 +63,8 @@ Restarts DataMiner agent.
 Restarts DataMiner agent. 
 Function calls these functions and in this order: 
     - first calls DisableNetAdapter with default parameter to avoid licensing issues.
-    - second Remove-DMANodes in order to remove any preexisting IPs in DMS.xml
-    - third Remove-NATSServerNodes in order to remove any preexisting IPs in SLCloud.xml
+    - second Remove-DMANodes with default parameter in order to remove any preexisting IPs in DMS.xml
+    - third Remove-NATSServerNodes with default parameter in order to remove any preexisting IPs in SLCloud.xml
     - forth "DataMiner Restart DataMiner And SLNet.bat" from C:\Skyline DataMiner\Tools
 
 .EXAMPLE
@@ -85,8 +85,8 @@ Starts DataMiner agent.
 Starts DataMiner agent. 
 Function calls these functions and in this order: 
     - first calls DisableNetAdapter with default parameter to avoid licensing issues.
-    - second Remove-DMANodes in order to remove any preexisting IPs in DMS.xml
-    - third Remove-NATSServerNodes in order to remove any preexisting IPs in SLCloud.xml
+    - second Remove-DMANodes with default parameter in order to remove any preexisting IPs in DMS.xml
+    - third Remove-NATSServerNodes with default parameter in order to remove any preexisting IPs in SLCloud.xml
     - forth "DataMiner Start DataMiner And SLNet.bat" from C:\Skyline DataMiner\Tools
 
 .EXAMPLE
