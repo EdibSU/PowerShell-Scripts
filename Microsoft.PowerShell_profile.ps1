@@ -202,3 +202,65 @@ function Remove-NATSServerNodes {
     # Save the modified XML back to the file or to a new file
     $xml.Save($path) | Out-Null
 }
+
+<#
+.SYNOPSIS
+Signs list of scripts using the provided certificate.
+
+.DESCRIPTION
+Signs list of DM scripts with provided certificate. By default signs Failover-ARR-EnableProxy.ps1 and Failover-ARR-ClearInboundRule.ps1.
+
+.PARAMETER CertSubject
+Name of the certificate to be used for signing. Looks for certificate in Cert:\localmachine\my.
+
+.PARAMETER scripts
+List of paths to scripts to be signed.
+
+.EXAMPLE
+SignDMScripts("{cert name}")
+
+.NOTES
+This function is used to sign DM scripts that need to be signed after update, namely Filover-ARR-EnableProxy.ps1 and Failover-ARR-ClearInboundRule.ps1.
+You need to have valid Code Signing certificate available to use.
+#>
+function SignDMScripts {
+    [CmdletBinding()]
+    Param (
+        [string]$CertSubject,
+        [string[]]$scripts = @("C:\Skyline DataMiner\Tools\Failover-ARR-EnableProxy.ps1", "C:\Skyline DataMiner\Tools\Failover-ARR-ClearInboundRule.ps1")
+    )
+
+    try {
+        # Open the LocalMachine My certificate store
+        $certStore = New-Object System.Security.Cryptography.X509Certificates.X509Store("My", "LocalMachine")
+        $certStore.Open([System.Security.Cryptography.X509Certificates.OpenFlags]::ReadOnly)
+
+        # Find the certificate by subject name
+        $cert = $certStore.Certificates | Where-Object { $_.Subject -like "*$CertSubject*" } | Select-Object -First 1
+
+        if ($null -ne $cert) {
+            # Sign the script
+            foreach ($script in $scripts) {
+                $signingResult = Set-AuthenticodeSignature -FilePath $script -Certificate $cert
+
+                if ($signingResult.Status -ne "Valid") {
+                    Write-Output "Failed to sign the script. Status: $($signingResult.Status)"
+                }
+                else {
+                    Write-Output "Script signed successfully. Status: $($signingResult.Status)"
+                }
+            }
+        } else {
+            Write-Output "Certificate with subject name containing '$CertSubject' not found."
+        }
+    }
+    catch {
+        Write-Error "An error occurred: $_"
+    }
+    finally {
+        # Close the certificate store
+        if ($null -ne $certStore) {
+            $certStore.Close()
+        }
+    }
+}
